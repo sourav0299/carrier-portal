@@ -1,12 +1,23 @@
 'use client';
+import { useState, useEffect } from'react';
 
-export default function Modal({ isOpen, onClose, onSubmit, selectedJob }) {
-  if (!isOpen) return null;
+export default function Modal({ isOpen, onClose, onSubmit }) {
+    if (!isOpen) return null;
+    const [jobtitle, setJobtitle] = useState([]);
+    useEffect(() => {
+    const fetchJobs = async () => {
+      const res = await fetch('/api/cards');
+      const data = await res.json();
+        setJobtitle(data);
+    };
+
+    fetchJobs();
+    }, []);
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
       <div className="bg-white p-6 rounded-lg shadow-lg max-w-lg w-full">
-        <h2 className="text-2xl font-bold mb-4">Apply for {selectedJob?.title}</h2>
+        <h2 className="text-2xl font-bold mb-4">Apply Form</h2>
         <form onSubmit={onSubmit}>
           <div className="mb-4">
             <label className="block text-sm font-medium mb-1">Your Name</label>
@@ -26,12 +37,11 @@ export default function Modal({ isOpen, onClose, onSubmit, selectedJob }) {
             </div>
             <div className="mb-4">
             <label className="block text-sm font-medium mb-1">Applying For</label>
-            <input
-                type="text"
-                value={selectedJob?.title}
-              className="w-full p-2 border border-gray-300 rounded"
-              readOnly
-            />
+            <select name="" id="">
+            {jobtitle.length > 0 && jobtitle.map((item, index) => (
+                <option key={index} value={item.title}>{item.title}</option>
+            ))}   
+            </select>
           </div>  
           <div className="mb-4">
             <label className="block text-sm font-medium mb-1">Resume (PDF)</label>
